@@ -1,9 +1,5 @@
-const { Sequelize, DataTypes } = require("sequelize");
-
-const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "./database.sqlite",
-});
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/db");
 
 const User = sequelize.define("User", {
   id: {
@@ -30,4 +26,4 @@ const User = sequelize.define("User", {
   },
 });
 
-module.exports = { sequelize, User };
+module.exports = { User };

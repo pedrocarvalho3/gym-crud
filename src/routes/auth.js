@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const UserService = require("../models/User");
+
+const UserService = require("../controllers/UserController");
 require("dotenv").config();
 
 const secret = process.env.ACCESS_TOKEN_SECRET;

@@ -16,4 +16,14 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-module.exports = authenticateToken;
+const isAdminMiddleware = (req, res, next) => {
+  if (req.user && req.user.isAdmin) {
+    next();
+  } else {
+    return res
+      .status(403)
+      .json({ message: "Acesso negado. Usuário não administrador." });
+  }
+};
+
+module.exports = { authenticateToken, isAdminMiddleware };
