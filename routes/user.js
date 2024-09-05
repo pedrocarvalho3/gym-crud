@@ -2,7 +2,6 @@ var express = require("express");
 var router = express.Router();
 const authenticateToken = require("../middleware/auth");
 
-const { sequelize } = require("../models/db");
 const UserService = require("../models/User");
 
 router.get("/", authenticateToken, async (req, res) => {
@@ -13,30 +12,58 @@ router.get("/", authenticateToken, async (req, res) => {
   res.json({ lista: await UserService.list() });
 });
 
-router.post("/", async (req, res) => {
-  res.json({ lista: await UserService.list() });
+router.post("/create-admin", authenticateToken, async (req, res) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({ error: "Acesso negado" });
+  }
+
+  const { username, password, email } = req.body;
+
+  try {
+    const admin = await UserService.create(username, password, email, true);
+    res.status(201).json({ message: "Admin criado com sucesso", admin });
+  } catch (err) {
+    res.status(400).json({ error: "Erro ao criar Admin", details: err });
+  }
 });
 
-router.get("/install", async function (req, res, next) {
-  await sequelize.sync({ force: true });
+router.delete("/delete/:id", authenticateToken, async (req, res) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({ error: "Acesso negado" });
+  }
 
-  let user = await UserService.create(
-    "Pedro Carvalho",
-    "1234",
-    "pedro@gmail.com",
-    true
-  );
-  user = await UserService.findById(user.id);
+  try {
+    const user = await UserService.findById(req.params.id);
+    if (!user || user.isAdmin) {
+      return res.status(404).json({ error: "Usuário nao encontrado ou Admin" });
+    }
 
-  let user1 = await UserService.create(
-    "Joao sla",
-    "1234",
-    "pedro@gmail.com",
-    false
-  );
-  user1 = await UserService.findById(user1.id);
+    await UserService.delete(req.params.id);
+    res.json({ message: "Usuário deletado com sucesso" });
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao deletar usuario", details: err });
+  }
+});
 
-  res.json({ msg: "Instalado com sucesso!", user, user1 });
+router.put("/update/:id", authenticateToken, async (req, res) => {
+  try {
+    const user = await UserService.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuário não encontrado" });
+    }
+
+    if (req.user.id !== user.id && !req.user.isAdmin) {
+      return res.status(403).json({ error: "Acesso negado" });
+    }
+
+    const { username, password, email } = req.body;
+
+    await UserService.update(req.params.id, username, password, email);
+    res.json({ message: "Usuário atualizado com sucesso" });
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao atualizar usuário", details: err });
+  }
 });
 
 module.exports = router;

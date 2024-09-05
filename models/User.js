@@ -11,6 +11,12 @@ module.exports = {
     return await User.findByPk(id);
   },
   list: async () => {
-    return User.findAll();
+    return await User.findAll();
+  },
+  delete: async (id) => {
+    return await User.destroy({ where: { id } });
+  },
+  update: async (id, username, password, email) => {
+    return await User.update({ username, password, email }, { where: { id } });
   },
 };
