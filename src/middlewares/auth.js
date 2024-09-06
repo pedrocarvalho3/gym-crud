@@ -7,10 +7,18 @@ const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
-  if (!token) return res.sendStatus(401);
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "Acesso negado. Token não fornecido." });
+  }
 
   jwt.verify(token, secret, (err, user) => {
-    if (err) return res.sendStatus(403);
+    if (err) {
+      return res
+        .status(403)
+        .json({ message: "Acesso negado. Token inválido." });
+    }
     req.user = user;
     next();
   });
@@ -22,7 +30,9 @@ const isAdminMiddleware = (req, res, next) => {
   } else {
     return res
       .status(403)
-      .json({ message: "Acesso negado. Usuário não administrador." });
+      .json({
+        message: "Acesso negado. Permissão de administrador necessária.",
+      });
   }
 };
 
