@@ -23,11 +23,11 @@ const Loan = sequelize.define("Loan", {
       key: "id",
     },
   },
-  data_loan: {
+  date_loan: {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  data_devolucao: {
+  date_return: {
     type: DataTypes.DATE,
     allowNull: true,
   },
