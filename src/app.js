@@ -19,6 +19,11 @@ app.use("/api/author", authorRouter);
 app.use("/api/book", bookRouter);
 app.use("/api/loan", loanRouter);
 
+const swaggerUi = require("swagger-ui-express");
+const swaggerFile = require("../swagger_doc.json");
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
