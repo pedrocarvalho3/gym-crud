@@ -5,9 +5,13 @@ const sequelize = require("../config/db");
 
 const User = require("../controllers/UserController");
 const Author = require("../controllers/AuthorController");
+const Book = require("../controllers/BookController");
+const Loan = require("../controllers/LoanController");
 
 const users = require("../../mock/mockUsers");
 const authors = require("../../mock/mockAuthors");
+const books = require("../../mock/mockBooks");
+const loans = require("../../mock/mockLoans");
 
 router.get("/", function (req, res, next) {
   res.json("Hello index!");
@@ -25,10 +29,18 @@ router.get("/install", async function (req, res, next) {
       await Author.init(author);
     }
 
+    for (const book of books) {
+      await Book.init(book);
+    }
+
+    for (const loan of loans) {
+      await Loan.init(loan);
+    }
+
     const admin = await User.findById(1);
 
     res.json({
-      message: "Usuários e autores criados com sucesso",
+      message: "Banco de dados instalado com sucesso",
       admin: admin,
     });
   } catch (error) {

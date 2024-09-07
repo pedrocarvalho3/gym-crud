@@ -1,6 +1,9 @@
 const Book = require("../models/Book");
 
 module.exports = {
+  init: async (bookData) => {
+    return await Book.create(bookData);
+  },
   create: async (title, publication_year, author_id) => {
     return await Book.create({ title, publication_year, author_id });
   },
