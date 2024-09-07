@@ -13,8 +13,12 @@ module.exports = {
   findById: async (id) => {
     return await User.findByPk(id);
   },
-  list: async () => {
-    return await User.findAll();
+  list: async (page, limit) => {
+    if (![5, 10, 30].includes(limit)) {
+      throw new Error("Limite deve ser 5, 10 ou 30");
+    }
+    const offset = (page - 1) * limit;
+    return await User.findAll({ limit, offset });
   },
   delete: async (id) => {
     return await User.destroy({ where: { id } });

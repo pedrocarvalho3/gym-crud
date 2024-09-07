@@ -16,6 +16,7 @@
     "morgan": "~1.9.1",
     "nodemon": "^3.1.4",
     "sequelize": "^6.37.3",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "swagger-autogen": "^2.23.7"
   }
 }

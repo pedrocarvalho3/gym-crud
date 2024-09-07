@@ -33,13 +33,19 @@ router.post(
 );
 
 router.get("/", authenticateToken, async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+
   try {
-    const loans = await LoanService.list();
-    res.json({ lista: loans });
+    const loans = await LoanService.list(page, limit);
+
+    res.json({
+      page,
+      limit,
+      loans,
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Erro ao listar empréstimos", error: error.message });
+    res.status(400).json({ message: error.message });
   }
 });
 

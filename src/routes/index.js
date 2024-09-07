@@ -14,7 +14,9 @@ const books = require("../../mock/mockBooks");
 const loans = require("../../mock/mockLoans");
 
 router.get("/", function (req, res, next) {
-  res.json("Hello index!");
+  res.json(
+    "Bem vindo ao meu crud de livraria! Chame a rota /install para inicializar o banco e acessar o usuario admin"
+  );
 });
 
 router.get("/install", async function (req, res, next) {

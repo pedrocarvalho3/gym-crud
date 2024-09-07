@@ -5,7 +5,20 @@ const { authenticateToken, isAdminMiddleware } = require("../middlewares/auth");
 const UserService = require("../controllers/UserController");
 
 router.get("/", authenticateToken, isAdminMiddleware, async (req, res) => {
-  res.json({ lista: await UserService.list() });
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+
+  try {
+    const users = await UserService.list(page, limit);
+
+    res.json({
+      page,
+      limit,
+      users,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 });
 
 router.post(
