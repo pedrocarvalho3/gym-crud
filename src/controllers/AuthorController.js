@@ -1,6 +1,9 @@
 const Author = require("../models/Author");
 
 module.exports = {
+  init: async (authorData) => {
+    return await Author.create(authorData);
+  },
   create: async (name, nationality) => {
     return await Author.create({ name, nationality });
   },
