@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const BookService = require("../controllers/BookController");
+const LoanService = require("../controllers/LoanController");
 const { authenticateToken, isAdminMiddleware } = require("../middlewares/auth");
 
 router.post(
@@ -27,6 +28,27 @@ router.post(
     }
   }
 );
+
+router.get("/loan-historic", authenticateToken, async (req, res) => {
+  try {
+    const loans = await LoanService.findByUser(req.user.id);
+    if (loans.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Nenhum empréstimo encontrado para este usuário" });
+    }
+
+    const bookTitles = loans.map((loan) => loan.Book.title);
+
+    console.log(bookTitles);
+
+    res.json({ usuario: req.user.id, livros_emprestados: bookTitles });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Erro ao buscar empréstimos", error: error.message });
+  }
+});
 
 router.get("/", authenticateToken, async (req, res) => {
   const page = parseInt(req.query.page) || 1;
